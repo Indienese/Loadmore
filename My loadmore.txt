@@ -1,0 +1,71 @@
+<b:if cond='data:blog.pageType != &quot;item&quot;'>
+<!-- all pages except item pages -->
+<!--b:if cond='data:blog.searchLabel'-->   
+<!--b:if cond='data:blog.searchQuery'-->   
+<!-- b:if cond='data:blog.pageType == &quot;static_page&quot;'-->           
+<div class='loadMorePosts'>
+<a class='loadMoreButton blog-pager-older-link' expr:href='data:olderPageUrl' expr:title='data:messages.morePosts' href='https://indienesien.blogspot.com/' style=''>More Posts
+<b:include class='chevron-bawah' data='{iconClass: &quot;chevron-bawah&quot;}' name='chevronDownIcon'/>
+</a>
+</div>
+<div class='noMorePosts' style='display: none'><span>No More Posts to Load</span></div>             
+<!--/b:if-->     
+</b:if>
+<style>
+.loadMorePosts{
+width:100%;max-width:130px;
+float:none;
+margin:0 auto;padding:16px 20px;
+margin-top:50px;
+border: 1px groove #ededed;border-radius:8px
+}
+.loadMoreButton .blog-pager-older-link{
+float:left;
+z-index:999;
+display:block;
+font-size:32px! important
+}
+.chevron-bawah {
+float:right;top:-2px;!important;
+position:relative;
+}
+.noMorePosts{
+text-align:center  
+}
+</style>        
+
+
+<b:if cond='data:blog.homepageUrl == data:blog.url'>
+<script type='text/javascript'>
+var spinner = $('.lds-css');
+spinner.wrap("<div class='loadMore'><div id='loader' style='display: none'></div></div>");
+spinner.parents('.loadMore').prepend("<div class='loadMorePosts'><a class='loadMoreButton' href='#'>Load More Posts</a></div><div class='noMorePosts' style='display: none'><span>No More Posts to Load</span></div>");
+$('#blog-pager').hide();
+var olderLink = $('a.blog-pager-older-link').attr("href");
+if(olderLink)
+$('.loadMorePosts').show();
+$('.loadMorePosts a').on('click', function(e){
+ $('.loadMorePosts').hide();
+    $.ajax({
+        url: olderLink,
+        success: function(html){
+   var res = $(html).find('.blog-posts');
+   res.children(".status-msg-wrap").remove();
+            $('.blog-posts').append(res.html());
+   olderLink = $(html).find('.blog-pager-older-link').attr("href");
+
+   if (olderLink)
+    $('.loadMorePosts').show();
+   else $('.noMorePosts').show();
+        },
+  beforeSend: function() {
+   $('.loadMore > #loader').show();
+  },
+     complete: function(){
+         $('.loadMore > #loader').hide();
+  },
+    });
+e.preventDefault();
+});
+</script>
+</b:if>
